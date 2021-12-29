@@ -1,0 +1,9 @@
+version: '3.0'
+
+services:
+  lighthouse:
+    image: satishpkb/nebula-lighthouse:latest
+    volumes:
+      - path-to/my-lighthouse-config:/etc/nebula
+    ports:
+      - 4242:4242/udp
