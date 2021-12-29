@@ -1,0 +1,61 @@
+name: Build and Push releases to repositories
+
+on:
+  # allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    tags:
+      - 'v*.*.*'
+
+  release:
+    types:
+      - published
+
+jobs:
+  # define job to build and publish docker image
+  build-and-push-docker-image:
+    name: Build container image for Nebula Lighthouse and push to repositories
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+
+    # steps to perform in job
+    steps:
+      - name: Checkout code from repository
+        uses: actions/checkout@v2
+
+      - name: Get current tag
+        uses: battila7/get-version-action@v2
+        id: currenttag
+
+      # setup Docker buld action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build image and push to Docker Hub and GitHub Container Registry
+        uses: docker/build-push-action@v2
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          context: .
+          build-args: |
+            NEBULA_VERSION=1.5.0
+            NEBULA_CHECKSUM=c70929951f11c697f0f17b4175e672d93f64c88114a66c4dd05cc23e6390a3d9
+          tags: |
+            ${{ secrets.DOCKER_REPONAME }}:${{ steps.currenttag.outputs.version-without-v }}
+            ${{ secrets.DOCKER_REPONAME }}:latest 
+            ghcr.io/${{ github.actor }}/${{ github.repository }}:${{ steps.currenttag.outputs.version-without-v }}
+            ghcr.io/${{ github.actor }}/${{ github.repository }}:latest
+          # build on feature branches, push only on main branch
+          push: true
