@@ -41,7 +41,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: .
           build-args: |
-            NEBULA_VERSION=1.5.0
-            NEBULA_CHECKSUM=c70929951f11c697f0f17b4175e672d93f64c88114a66c4dd05cc23e6390a3d9
+            NEBULA_VERSION=1.5.2
+            NEBULA_CHECKSUM=76816e3bab815ed07600a541f96e4093b911aca310bb74d2c72085a9a605af60
           # do not push images to repo, we are insterested only in verification
           push: false
