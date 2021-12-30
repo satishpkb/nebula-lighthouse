@@ -55,7 +55,7 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_REPONAME }}:${{ steps.currenttag.outputs.version-without-v }}
             ${{ secrets.DOCKER_REPONAME }}:latest 
-            ghcr.io/${{ github.actor }}/${{ github.repository }}:${{ steps.currenttag.outputs.version-without-v }}
-            ghcr.io/${{ github.actor }}/${{ github.repository }}:latest
+            #ghcr.io/${{ github.actor }}/${{ github.repository }}:${{ steps.currenttag.outputs.version-without-v }}
+            #ghcr.io/${{ github.actor }}/${{ github.repository }}:latest
           # build on feature branches, push only on main branch
           push: true
